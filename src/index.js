@@ -14,11 +14,13 @@ dotenv.config({ path: path.join(backendRoot, '.env') })
 
 const app = express()
 
-app.use(
-  cors({
-    origin: ['http://localhost:5173', 'http://127.0.0.1:5173'],
-  })
-)
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  process.env.FRONTEND_URL,
+].filter(Boolean)
+app.use(cors({ origin: allowedOrigins.length ? allowedOrigins : true }))
+app.use(express.json())
 
 app.get('/api/health', (_req, res) => {
   const dbReady = mongoose.connection.readyState === 1
@@ -34,10 +36,10 @@ app.get('/api/health', (_req, res) => {
 app.use('/uploads', express.static(path.join(backendRoot, 'uploads')))
 app.use('/api/uploads', uploadsRouter)
 
-// Basic error handler
-// eslint-disable-next-line no-unused-vars
 app.use((err, _req, res, _next) => {
-  console.error(err)
+  if (process.env.NODE_ENV !== 'production') {
+    console.error(err)
+  }
   res.status(500).json({ error: 'Server error' })
 })
 

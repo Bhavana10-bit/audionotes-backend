@@ -8,6 +8,7 @@ const UploadSchema = new mongoose.Schema(
     storageFilename: { type: String, required: true },
     storagePath: { type: String, required: true },
     transcription: { type: String, default: null },
+    userId: { type: String, default: null, index: true },
   },
   { timestamps: true }
 )

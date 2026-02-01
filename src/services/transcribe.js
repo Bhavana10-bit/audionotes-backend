@@ -11,10 +11,7 @@ const DEEPGRAM_URL = 'https://api.deepgram.com/v1/listen?model=nova-2&smart_form
  */
 export async function transcribeWithDeepgram(filePath, mimeType) {
   const apiKey = (process.env.DEEPGRAM_API_KEY || '').trim().replace(/[;,]\s*$/, '')
-  if (!apiKey) {
-    console.warn('Transcription skipped: DEEPGRAM_API_KEY is missing in backend/.env. Add your key from https://console.deepgram.com')
-    return null
-  }
+  if (!apiKey) return null
 
   const absolutePath = path.isAbsolute(filePath) ? filePath : path.resolve(filePath)
   if (!fs.existsSync(absolutePath)) {
